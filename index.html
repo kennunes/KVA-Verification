@@ -26,6 +26,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [kwhInput, setKwhInput] = useState("");
+  const [currentBillInput, setCurrentBillInput] = useState("");
   const [result, setResult] = useState(null);
   const [showSubmission, setShowSubmission] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -41,8 +42,9 @@ export default function App() {
 
   const handleManualCalc = () => {
     const kwh = parseFloat(kwhInput);
-    if (isNaN(kwh) || kwh <= 0) return;
-    performSimulation(kwh, 49139.95);
+    const bill = parseFloat(currentBillInput);
+    if (isNaN(kwh) || kwh <= 0 || isNaN(bill) || bill <= 0) return;
+    performSimulation(kwh, bill);
   };
 
   const performSimulation = (kWh, currentTotal) => {
@@ -65,6 +67,9 @@ export default function App() {
   const handleFileUpload = (event) => {
     setAnalyzing(true);
     setTimeout(() => {
+      // Simulation of AI extraction
+      setKwhInput("3264.70");
+      setCurrentBillInput("49139.95");
       performSimulation(3264.70, 49139.95);
       setAnalyzing(false);
     }, 2000);
@@ -164,7 +169,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* Step 2: Full Width Banner (Same design as Step 1) */}
+            {/* Step 2: Full Width Banner */}
             <section className="mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className={`w-full p-6 md:px-8 rounded-[25px] border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xl'} flex flex-col gap-6`}>
                 <div className="flex flex-col md:flex-row items-center gap-4 border-b border-slate-800/50 pb-4">
@@ -178,28 +183,38 @@ export default function App() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                   {/* Manual Consumption */}
-                  <div className="flex flex-col md:flex-row items-center gap-6 w-full">
-                    <div className="flex-grow w-full max-w-xs">
+                  <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+                    <div className="flex-grow w-full space-y-3">
                       <div className="relative">
-                        <span className="absolute left-0 bottom-2 text-[10px] font-bold text-slate-500 uppercase">kWh</span>
+                        <span className="absolute left-0 bottom-2 text-[8px] font-black text-slate-500 uppercase">kWh</span>
                         <input 
                           type="number"
-                          placeholder="Monthly consumption"
-                          className={`w-full bg-transparent border-b-2 border-emerald-500 text-center text-2xl font-black font-mono focus:outline-none pb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}
+                          placeholder="Monthly Units"
+                          className={`w-full bg-transparent border-b border-emerald-500 text-center text-xl font-black font-mono focus:outline-none pb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}
                           value={kwhInput}
                           onChange={(e) => setKwhInput(e.target.value)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <span className="absolute left-0 bottom-2 text-[8px] font-black text-slate-500 uppercase">Total R</span>
+                        <input 
+                          type="number"
+                          placeholder="Monthly Bill"
+                          className={`w-full bg-transparent border-b border-emerald-500 text-center text-xl font-black font-mono focus:outline-none pb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}
+                          value={currentBillInput}
+                          onChange={(e) => setCurrentBillInput(e.target.value)}
                         />
                       </div>
                     </div>
                     <button 
                       onClick={handleManualCalc}
-                      className="w-full md:w-44 py-3 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-all shadow-lg uppercase tracking-widest text-[10px]"
+                      className="w-full md:w-32 py-3 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-all shadow-lg uppercase tracking-widest text-[9px]"
                     >
                       Compare Now
                     </button>
                   </div>
 
-                  {/* File Upload (Same structural highlight as Option A) */}
+                  {/* File Upload */}
                   <div className="flex flex-col md:flex-row items-center gap-6 w-full md:border-l md:border-slate-800 md:pl-8">
                     <div className="flex items-center gap-4 flex-grow">
                       <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-emerald-400 shrink-0">
@@ -220,7 +235,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Still in Doubt CTA - Standardized to green as requested */}
+              {/* Still in Doubt CTA */}
               <div className="mt-6 flex justify-center">
                 <button 
                   onClick={() => setShowHelp(true)}
